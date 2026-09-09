@@ -1,0 +1,207 @@
+@use 'themes';
+
+body {
+    margin: 0;
+    font-family: var(--font-main);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* ---------- Общий лэйаут ---------- */
+.app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+.app-nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.app-main {
+    flex: 1;
+    padding: 24px;
+}
+
+/* ---------- Карточка ---------- */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+.card h2,
+.card h3 {
+    margin-top: 0;
+}
+
+.grid {
+    display: grid;
+    gap: 16px;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* ---------- Кнопки и формы ---------- */
+.btn {
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-input);
+    color: var(--text-main);
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+.btn:hover {
+    border-color: var(--accent-color);
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-danger {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+input,
+select,
+textarea {
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-input);
+    color: var(--text-main);
+}
+
+textarea {
+    font-family: ui-monospace, Consolas, monospace;
+    resize: vertical;
+}
+
+/* ---------- Таблицы ---------- */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table th,
+.table td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.income {
+    color: var(--color-success);
+}
+
+.expense {
+    color: var(--color-danger);
+}
+
+.muted {
+    color: var(--text-muted);
+}
+
+/* ---------- Метрики дашборда ---------- */
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.metric-positive {
+    color: var(--color-success);
+}
+
+.metric-negative {
+    color: var(--color-danger);
+}
+
+.empty-state {
+    color: var(--text-muted);
+    padding: 12px 0;
+}
+
+.theme-btn {
+    padding: 8px 14px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-input);
+    color: var(--text-main);
+}

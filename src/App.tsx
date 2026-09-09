@@ -1,17 +1,12 @@
-import './1Application/styles/main.scss'
-import { useTheme } from './1Application/shared/context/ThemeContext'
+import './application/styles/main.scss'
+import { AppProvider } from './application/state/appStore'
+import { AppShell } from './application/AppShell'
 
 function App() {
-  const { theme, toggleTheme } = useTheme();
-
   return (
-    <div className="app-container">
-      <h1>Чистый проект: Vite + React + TS + SCSS</h1>
-      <p>Текущая тема: <strong>{theme}</strong></p>
-      <button className="theme-btn" onClick={toggleTheme}>
-        Переключить на {theme === 'light' ? 'тёмную' : 'светлую'} тему
-      </button>
-    </div>
+    <AppProvider>
+      <AppShell />
+    </AppProvider>
   )
 }
 

@@ -1,0 +1,31 @@
+/**
+ * Конфигурация правил извлечения данных из HTML-разметки.
+ * Правила определяют, как из страницы достать строки товаров,
+ * их названия и цены.
+ */
+export interface ParseConfig {
+    /** Тип страницы (напр. 'exchange' — биржа) */
+    pageType: string;
+    /** Источник для сохраняемых котировок */
+    source: string;
+    /** CSS-селектор строки-товара (каждый такой элемент = одна позиция) */
+    itemRowSelector: string;
+    /** CSS-селектор названия товара внутри строки */
+    itemNameSelector: string;
+    /** CSS-селектор цены внутри строки */
+    itemPriceSelector: string;
+    /** Если цена хранится в атрибуте, указать имя атрибута (иначе берётся текст) */
+    priceAttribute?: string;
+    /** Регулярка для вычленения числа из текста/атрибута цены */
+    priceRegex?: string;
+    /** Единица измерения по умолчанию */
+    unit: string;
+}
+
+/** Распарсенная позиция до сохранения в хранилище */
+export interface ParsedItem {
+    itemId: string;
+    itemName: string;
+    price: number;
+    unit: string;
+}
