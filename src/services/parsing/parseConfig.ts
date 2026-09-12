@@ -26,6 +26,15 @@ export interface ParseConfig {
 export interface ParsedItem {
     itemId: string;
     itemName: string;
+    /** Основная цена — минимальная цена на бирже */
     price: number;
     unit: string;
+    /** Числовой идентификатор ресурса из разметки (стабилен между серверами) */
+    exchangeId?: string;
+    /** Базовая цена (Номинал) */
+    nominalPrice?: number;
+    /** Минимальная цена покупки в Лавке торга */
+    swapPrice?: number;
+    /** Доступное количество ресурса на бирже */
+    available?: number;
 }

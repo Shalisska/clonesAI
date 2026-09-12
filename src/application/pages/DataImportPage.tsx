@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { EXCHANGE_PARSE_CONFIG, toPriceQuotes } from '../../services/parsing/exchangeParser';
-import { parseHtml } from '../../services/parsing/parserEngine';
+import { EXCHANGE_PARSE_CONFIG, parseExchangeRows, toPriceQuotes } from '../../services/parsing/exchangeParser';
 import type { ParsedItem } from '../../services/parsing/parseConfig';
+import { SERVER_LABELS } from '../../core/domain/enums';
 import { useApp } from '../state/appStore';
 import { formatMoney } from '../shared/utils/format';
 
 export const DataImportPage: React.FC = () => {
-    const { quotes, refresh, activeAccountId } = useApp();
+    const { quotes, refresh, accounts, activeAccountId } = useApp();
     const [html, setHtml] = useState('');
     const [parsed, setParsed] = useState<ParsedItem[] | null>(null);
     const [message, setMessage] = useState('');
@@ -17,7 +17,7 @@ export const DataImportPage: React.FC = () => {
             setMessage('Вставьте HTML-разметку.');
             return;
         }
-        const items = parseHtml(html, EXCHANGE_PARSE_CONFIG);
+        const items = parseExchangeRows(html);
         setParsed(items);
         setMessage(
             items.length === 0
@@ -38,22 +38,36 @@ export const DataImportPage: React.FC = () => {
         refresh();
     };
 
+    const handleExportJson = () => {
+        if (!parsed || parsed.length === 0) return;
+        const account = activeAccountId ? accounts.getById(activeAccountId) : undefined;
+        const payload = {
+            exportedAt: new Date().toISOString(),
+            source: EXCHANGE_PARSE_CONFIG.source,
+            accountId: activeAccountId ?? null,
+            server: account ? SERVER_LABELS[account.server] : null,
+            items: parsed,
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `exchange-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        setMessage(`Выгружено позиций в JSON: ${parsed.length}.`);
+    };
+
     return (
         <div className="grid">
             <section className="card">
                 <h2>Импорт данных с биржи</h2>
                 <p className="muted">
                     Вставьте HTML-разметку страницы биржи (скопированную после входа в игру).
-                    Используется фиксированный пресет правил:
-                </p>
-                <ul className="muted">
-                    <li>Строка товара: <code>{EXCHANGE_PARSE_CONFIG.itemRowSelector}</code></li>
-                    <li>Название: <code>{EXCHANGE_PARSE_CONFIG.itemNameSelector}</code></li>
-                    <li>Цена: <code>{EXCHANGE_PARSE_CONFIG.itemPriceSelector}</code></li>
-                </ul>
-                <p className="muted">
-                    Примечание: селекторы пока являются заглушкой — уточняются после получения
-                    реального образца разметки биржи.
+                    Парсер использует стабильные идентификаторы из разметки
+                    (<code>{EXCHANGE_PARSE_CONFIG.rowSelector}</code>, атрибут{' '}
+                    <code>{EXCHANGE_PARSE_CONFIG.priceAttribute}</code>), поэтому корректно работает
+                    на обоих серверах, включая уникальные товары каждого сервера.
                 </p>
 
                 <textarea
@@ -64,6 +78,13 @@ export const DataImportPage: React.FC = () => {
                 />
                 <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
                     <button className="btn btn-primary" onClick={handleParse}>Распарсить</button>
+                    <button
+                        className="btn"
+                        onClick={handleExportJson}
+                        disabled={!parsed || parsed.length === 0}
+                    >
+                        Скачать JSON
+                    </button>
                     <button
                         className="btn"
                         onClick={handleSave}
@@ -83,16 +104,24 @@ export const DataImportPage: React.FC = () => {
                     <table className="table">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Товар</th>
-                                <th className="num">Цена</th>
+                                <th className="num">Номинал</th>
+                                <th className="num">Лавка</th>
+                                <th className="num">Мин. цена</th>
+                                <th className="num">Доступно</th>
                                 <th>Ед.</th>
                             </tr>
                         </thead>
                         <tbody>
                             {parsed.map((p) => (
                                 <tr key={p.itemId}>
+                                    <td className="muted">{p.exchangeId ?? '—'}</td>
                                     <td>{p.itemName}</td>
+                                    <td className="num">{p.nominalPrice != null ? formatMoney(p.nominalPrice) : '—'}</td>
+                                    <td className="num">{p.swapPrice != null ? formatMoney(p.swapPrice) : '—'}</td>
                                     <td className="num">{formatMoney(p.price)}</td>
+                                    <td className="num">{p.available ?? '—'}</td>
                                     <td>{p.unit}</td>
                                 </tr>
                             ))}

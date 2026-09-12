@@ -36,8 +36,17 @@ export interface PriceQuote extends Identifiable {
     /** Аккаунт, к которому относится котировка; проставляется при сохранении */
     accountId?: string;
     itemId: string;
+    /** Числовой идентификатор ресурса из разметки (стабилен между серверами) */
+    exchangeId?: string;
     itemName: string;
+    /** Основная цена — минимальная цена на бирже */
     price: number;
+    /** Базовая цена (Номинал) */
+    nominalPrice?: number;
+    /** Минимальная цена покупки в Лавке торга */
+    swapPrice?: number;
+    /** Доступное количество ресурса на бирже */
+    available?: number;
     unit: string;
     /** Источник разметки, напр. 'exchange' */
     source: string;

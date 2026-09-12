@@ -99,16 +99,20 @@ export const DashboardPage: React.FC = () => {
                             <thead>
                                 <tr>
                                     <th>Товар</th>
-                                    <th className="num">Цена</th>
-                                    <th>Обновлено</th>
+                                    <th className="num">Номинал</th>
+                                    <th className="num">Лавка</th>
+                                    <th className="num">Мин. цена</th>
+                                    <th className="num">Доступно</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {quotes.slice(0, 10).map((q) => (
                                     <tr key={q.itemId}>
                                         <td>{q.itemName}</td>
+                                        <td className="num">{q.nominalPrice != null ? formatMoney(q.nominalPrice) : '—'}</td>
+                                        <td className="num">{q.swapPrice != null ? formatMoney(q.swapPrice) : '—'}</td>
                                         <td className="num">{formatMoney(q.price)} {q.unit}</td>
-                                        <td>{formatDate(q.timestamp)}</td>
+                                        <td className="num">{q.available ?? '—'}</td>
                                     </tr>
                                 ))}
                             </tbody>
