@@ -6,7 +6,7 @@ import { useBlocks, useLatestQuotes, useTransactions } from '../hooks/useData';
 import { formatDate, formatMoney, formatPercent } from '../shared/utils/format';
 
 export const DashboardPage: React.FC = () => {
-    const { dashboard } = useApp();
+    const { dashboard, activeAccountId } = useApp();
     const blocks = useBlocks();
     const transactions = useTransactions();
     const quotes = useLatestQuotes();
@@ -17,6 +17,12 @@ export const DashboardPage: React.FC = () => {
 
     return (
         <div className="grid" style={{ gap: 16 }}>
+            {!activeAccountId && (
+                <p className="card muted" style={{ margin: 0 }}>
+                    Аккаунт не выбран. Создайте и выберите аккаунт во вкладке «Аккаунты»,
+                    чтобы вести учёт для конкретного пользователя и сервера.
+                </p>
+            )}
             <section className="grid grid-3">
                 <StatCard label="Доход" value={formatMoney(snapshot.totalIncome)} tone="positive" />
                 <StatCard label="Расход" value={formatMoney(snapshot.totalExpense)} tone="negative" />

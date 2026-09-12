@@ -2,10 +2,12 @@ import React, { useRef, useState } from 'react';
 import { createBackup, downloadBackup, parseBackup } from '../../data/storage/backup';
 import { overwriteStore } from '../../data/storage/storageManager';
 import { useApp } from '../state/appStore';
-import { useBlocks, useQuotes, useTransactions } from '../hooks/useData';
+import { useAccounts, useBlocks, useQuotes, useTransactions, useUsers } from '../hooks/useData';
 
 export const BackupPage: React.FC = () => {
-    const { store, refresh } = useApp();
+    const { store, refresh, accounts, setActiveAccount, activeAccountId } = useApp();
+    const users = useUsers();
+    const accountList = useAccounts();
     const blocks = useBlocks();
     const transactions = useTransactions();
     const quotes = useQuotes();
@@ -13,7 +15,7 @@ export const BackupPage: React.FC = () => {
     const [message, setMessage] = useState('');
 
     const handleExport = () => {
-        const backup = createBackup(blocks, transactions, quotes);
+        const backup = createBackup(users, accountList, blocks, transactions, quotes);
         downloadBackup(backup);
         setMessage('Резервная копия выгружена.');
     };
@@ -30,8 +32,12 @@ export const BackupPage: React.FC = () => {
             }
             overwriteStore(store, data);
             refresh();
+            // если выбранный аккаунт исчез после импорта — сбрасываем выбор
+            if (activeAccountId && !accounts.getById(activeAccountId)) {
+                setActiveAccount(null);
+            }
             setMessage(
-                `Импортировано: блоков ${data.blocks.length}, операций ${data.transactions.length}, котировок ${data.quotes.length}.`,
+                `Импортировано: пользователей ${data.users.length}, аккаунтов ${data.accounts.length}, блоков ${data.blocks.length}, операций ${data.transactions.length}, котировок ${data.quotes.length}.`,
             );
         };
         reader.readAsText(file);

@@ -1,4 +1,4 @@
-import type { Category, TransactionType } from './enums';
+import type { Category, Server, TransactionType } from './enums';
 
 export interface Identifiable {
     id: string;
@@ -16,6 +16,8 @@ export interface Block extends Identifiable {
 
 /** Запись прихода/расхода по блоку */
 export interface Transaction extends Identifiable {
+    /** Аккаунт, к которому относится операция */
+    accountId: string;
     /** Дата операции, ISO-строка */
     date: string;
     blockId: string;
@@ -31,6 +33,8 @@ export interface Transaction extends Identifiable {
 
 /** Распарсенная цена товара (из HTML биржи) */
 export interface PriceQuote extends Identifiable {
+    /** Аккаунт, к которому относится котировка; проставляется при сохранении */
+    accountId?: string;
     itemId: string;
     itemName: string;
     price: number;
@@ -40,6 +44,22 @@ export interface PriceQuote extends Identifiable {
     timestamp: string;
     /** Хэш исходной разметки для дедупликации повторных вставок */
     htmlHash: string;
+}
+
+/** Пользователь приложения (владелец одного или нескольких аккаунтов). */
+export interface User extends Identifiable {
+    name: string;
+    createdAt: string;
+}
+
+/** Игровой аккаунт пользователя на конкретном сервере. */
+export interface Account extends Identifiable {
+    userId: string;
+    server: Server;
+    /** Имя персонажа / название аккаунта */
+    name: string;
+    notes?: string;
+    createdAt: string;
 }
 
 /** Входные параметры песочницы (прогноз прибыльности) */
@@ -111,6 +131,8 @@ export interface Snapshot {
 export interface AppData {
     version: number;
     exportedAt: string;
+    users: User[];
+    accounts: Account[];
     blocks: Block[];
     transactions: Transaction[];
     quotes: PriceQuote[];

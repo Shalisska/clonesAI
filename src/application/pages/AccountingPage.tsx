@@ -6,7 +6,7 @@ import { useBlocks, useTransactions } from '../hooks/useData';
 import { formatDate, formatMoney } from '../shared/utils/format';
 
 export const AccountingPage: React.FC = () => {
-    const { accounting, dashboard, refresh } = useApp();
+    const { accounting, dashboard, refresh, activeAccountId } = useApp();
     const blocks = useBlocks();
     const transactions = useTransactions();
 
@@ -41,6 +41,11 @@ export const AccountingPage: React.FC = () => {
         <div className="grid grid-2">
             <section className="card">
                 <h2>Новая операция</h2>
+                {!activeAccountId && (
+                    <p className="muted" style={{ marginTop: 0 }}>
+                        Сначала выберите аккаунт в шапке (или создайте его во вкладке «Аккаунты»).
+                    </p>
+                )}
                 <form onSubmit={handleAdd} className="grid" style={{ gap: 12 }}>
                     <div className="field">
                         <label>Блок</label>
@@ -76,7 +81,9 @@ export const AccountingPage: React.FC = () => {
                         <label>Описание (опц.)</label>
                         <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
                     </div>
-                    <button className="btn btn-primary" type="submit">Добавить</button>
+                    <button className="btn btn-primary" type="submit" disabled={!activeAccountId}>
+                        Добавить
+                    </button>
                 </form>
             </section>
 

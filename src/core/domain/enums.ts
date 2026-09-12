@@ -26,3 +26,18 @@ export const CATEGORY_LABELS: Record<Category, string> = {
     [Category.Trade]: 'Торговля и биржа',
     [Category.Other]: 'Прочее',
 };
+
+// Серверы игры «Золотой клон»
+export const Server = {
+    Metropolis: 'metropolis',
+    Enclave: 'enclave',
+} as const;
+export type Server = (typeof Server)[keyof typeof Server];
+
+/** Список серверов в фиксированном порядке отображения. */
+export const SERVERS: readonly Server[] = [Server.Metropolis, Server.Enclave];
+
+export const SERVER_LABELS: Record<Server, string> = {
+    [Server.Metropolis]: 'Метрополия',
+    [Server.Enclave]: 'Анклав',
+};

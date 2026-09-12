@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useTheme } from './shared/context/ThemeContext';
+import { AccountSelector } from './components/AccountSelector';
 import { DashboardPage } from './pages/DashboardPage';
 import { AccountingPage } from './pages/AccountingPage';
 import { SandboxPage } from './pages/SandboxPage';
 import { DataImportPage } from './pages/DataImportPage';
 import { BackupPage } from './pages/BackupPage';
+import { AccountsPage } from './pages/AccountsPage';
 
-type Tab = 'dashboard' | 'accounting' | 'sandbox' | 'import' | 'backup';
+type Tab = 'dashboard' | 'accounting' | 'sandbox' | 'import' | 'accounts' | 'backup';
 
 const TABS: Array<{ id: Tab; label: string }> = [
     { id: 'dashboard', label: 'Дашборд' },
     { id: 'accounting', label: 'Учёт' },
     { id: 'sandbox', label: 'Песочница' },
     { id: 'import', label: 'Импорт данных' },
+    { id: 'accounts', label: 'Аккаунты' },
     { id: 'backup', label: 'Резервная копия' },
 ];
 
@@ -34,6 +37,7 @@ export const AppShell: React.FC = () => {
                             {t.label}
                         </button>
                     ))}
+                    <AccountSelector />
                     <button className="theme-btn" onClick={toggleTheme} title="Переключить тему">
                         {theme === 'dark' ? '☀️' : '🌙'}
                     </button>
@@ -44,6 +48,7 @@ export const AppShell: React.FC = () => {
                 {tab === 'accounting' && <AccountingPage />}
                 {tab === 'sandbox' && <SandboxPage />}
                 {tab === 'import' && <DataImportPage />}
+                {tab === 'accounts' && <AccountsPage />}
                 {tab === 'backup' && <BackupPage />}
             </main>
         </div>

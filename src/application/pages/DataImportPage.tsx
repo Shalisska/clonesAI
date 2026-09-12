@@ -6,7 +6,7 @@ import { useApp } from '../state/appStore';
 import { formatMoney } from '../shared/utils/format';
 
 export const DataImportPage: React.FC = () => {
-    const { quotes, refresh } = useApp();
+    const { quotes, refresh, activeAccountId } = useApp();
     const [html, setHtml] = useState('');
     const [parsed, setParsed] = useState<ParsedItem[] | null>(null);
     const [message, setMessage] = useState('');
@@ -28,6 +28,10 @@ export const DataImportPage: React.FC = () => {
 
     const handleSave = () => {
         if (!parsed || parsed.length === 0) return;
+        if (!activeAccountId) {
+            setMessage('Сначала выберите аккаунт — котировки сохраняются для конкретного аккаунта.');
+            return;
+        }
         const result = quotes.saveMany(toPriceQuotes(parsed, html));
         setMessage(`Сохранено: ${result.saved}, пропущено дублей: ${result.skipped}.`);
         setParsed(null);
@@ -63,7 +67,7 @@ export const DataImportPage: React.FC = () => {
                     <button
                         className="btn"
                         onClick={handleSave}
-                        disabled={!parsed || parsed.length === 0}
+                        disabled={!parsed || parsed.length === 0 || !activeAccountId}
                     >
                         Сохранить котировки ({parsed?.length ?? 0})
                     </button>

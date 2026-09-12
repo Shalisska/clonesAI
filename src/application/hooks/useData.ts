@@ -1,4 +1,4 @@
-import type { Block, PriceQuote, Transaction } from '../../core/domain/types';
+import type { Account, Block, PriceQuote, Transaction, User } from '../../core/domain/types';
 import { useApp } from '../state/appStore';
 
 /** Возвращает актуальные блоки (перечитывает из хранилища при каждом изменении). */
@@ -6,6 +6,20 @@ export function useBlocks(): Block[] {
     const { store, revision } = useApp();
     void revision; // перечитываем данные при каждом изменении
     return store.blocks.getAll();
+}
+
+/** Возвращает актуальный список пользователей. */
+export function useUsers(): User[] {
+    const { accounts, revision } = useApp();
+    void revision;
+    return accounts.getUsers();
+}
+
+/** Возвращает актуальный список аккаунтов. */
+export function useAccounts(): Account[] {
+    const { accounts, revision } = useApp();
+    void revision;
+    return accounts.getAccounts();
 }
 
 /** Возвращает актуальные транзакции. */
