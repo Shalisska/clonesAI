@@ -109,9 +109,9 @@ export const DashboardPage: React.FC = () => {
                                 {quotes.slice(0, 10).map((q) => (
                                     <tr key={q.itemId}>
                                         <td>{q.itemName}</td>
-                                        <td className="num">{q.nominalPrice != null ? formatMoney(q.nominalPrice) : '—'}</td>
+                                        <td className="num">{q.basePrice != null ? formatMoney(q.basePrice) : '—'}</td>
                                         <td className="num">{q.swapPrice != null ? formatMoney(q.swapPrice) : '—'}</td>
-                                        <td className="num">{formatMoney(q.price)} {q.unit}</td>
+                                        <td className="num">{formatMoney(q.price)}</td>
                                         <td className="num">{q.available ?? '—'}</td>
                                     </tr>
                                 ))}

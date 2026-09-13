@@ -32,7 +32,7 @@ export interface ParsedItem {
     /** Числовой идентификатор ресурса из разметки (стабилен между серверами) */
     exchangeId?: string;
     /** Базовая цена (Номинал) */
-    nominalPrice?: number;
+    basePrice?: number;
     /** Минимальная цена покупки в Лавке торга */
     swapPrice?: number;
     /** Доступное количество ресурса на бирже */

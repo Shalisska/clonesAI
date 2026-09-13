@@ -42,7 +42,7 @@ export interface PriceQuote extends Identifiable {
     /** Основная цена — минимальная цена на бирже */
     price: number;
     /** Базовая цена (Номинал) */
-    nominalPrice?: number;
+    basePrice?: number;
     /** Минимальная цена покупки в Лавке торга */
     swapPrice?: number;
     /** Доступное количество ресурса на бирже */

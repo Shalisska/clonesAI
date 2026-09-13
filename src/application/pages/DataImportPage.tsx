@@ -118,7 +118,7 @@ export const DataImportPage: React.FC = () => {
                                 <tr key={p.itemId}>
                                     <td className="muted">{p.exchangeId ?? '—'}</td>
                                     <td>{p.itemName}</td>
-                                    <td className="num">{p.nominalPrice != null ? formatMoney(p.nominalPrice) : '—'}</td>
+                                    <td className="num">{p.basePrice != null ? formatMoney(p.basePrice) : '—'}</td>
                                     <td className="num">{p.swapPrice != null ? formatMoney(p.swapPrice) : '—'}</td>
                                     <td className="num">{formatMoney(p.price)}</td>
                                     <td className="num">{p.available ?? '—'}</td>

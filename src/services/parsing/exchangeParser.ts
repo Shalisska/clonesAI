@@ -50,7 +50,7 @@ export function parseExchangeRows(html: string): ParsedItem[] {
         const name = cleanText(tds[NAME_TD]?.textContent ?? '');
         if (!name) continue;
 
-        const nominalPrice = priceFromTd(tds[NOMINAL_TD]);
+        const basePrice = priceFromTd(tds[NOMINAL_TD]);
         const swapPrice = priceFromTd(tds[SWAP_TD]);
         const minPrice = priceFromTd(tds[MIN_PRICE_TD]);
         const available = quantityFromTd(tds[AVAILABLE_TD]);
@@ -59,10 +59,10 @@ export function parseExchangeRows(html: string): ParsedItem[] {
         results.push({
             itemId: `res-${exchangeId}`,
             itemName: name,
-            price: minPrice ?? nominalPrice ?? 0,
+            price: minPrice ?? basePrice ?? 0,
             unit,
             exchangeId,
-            nominalPrice,
+            basePrice,
             swapPrice,
             available,
         });
@@ -133,7 +133,7 @@ export function toPriceQuotes(items: ParsedItem[], html: string): PriceQuote[] {
         exchangeId: item.exchangeId,
         itemName: item.itemName,
         price: item.price,
-        nominalPrice: item.nominalPrice,
+        basePrice: item.basePrice,
         swapPrice: item.swapPrice,
         available: item.available,
         unit: item.unit,
