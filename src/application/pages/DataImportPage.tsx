@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EXCHANGE_PARSE_CONFIG, parseExchangeRows, toPriceQuotes } from '../../services/parsing/exchangeParser';
 import type { ParsedItem } from '../../services/parsing/parseConfig';
-import { SERVER_LABELS } from '../../core/domain/enums';
+import { SERVERS, SERVER_LABELS, Server, type Server as ServerType } from '../../core/domain/enums';
 import { useApp } from '../state/appStore';
 import { formatMoney } from '../shared/utils/format';
 
@@ -10,6 +10,18 @@ export const DataImportPage: React.FC = () => {
     const [html, setHtml] = useState('');
     const [parsed, setParsed] = useState<ParsedItem[] | null>(null);
     const [message, setMessage] = useState('');
+
+    // Сервер по умолчанию: сервер текущего аккаунта, иначе — Метрополия.
+    const accountServer = activeAccountId ? accounts.getById(activeAccountId)?.server : undefined;
+    const [selectedServer, setSelectedServer] = useState<ServerType>(
+        () => accountServer ?? Server.Metropolis,
+    );
+
+    // При смене аккаунта сбрасываем выбор сервера на сервер нового аккаунта.
+    useEffect(() => {
+        setSelectedServer(accountServer ?? Server.Metropolis);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeAccountId]);
 
     const handleParse = () => {
         setMessage('');
@@ -40,12 +52,12 @@ export const DataImportPage: React.FC = () => {
 
     const handleExportJson = () => {
         if (!parsed || parsed.length === 0) return;
-        const account = activeAccountId ? accounts.getById(activeAccountId) : undefined;
         const payload = {
             exportedAt: new Date().toISOString(),
             source: EXCHANGE_PARSE_CONFIG.source,
             accountId: activeAccountId ?? null,
-            server: account ? SERVER_LABELS[account.server] : null,
+            server: SERVER_LABELS[selectedServer],
+            serverId: selectedServer,
             items: parsed,
         };
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -69,6 +81,18 @@ export const DataImportPage: React.FC = () => {
                     <code>{EXCHANGE_PARSE_CONFIG.priceAttribute}</code>), поэтому корректно работает
                     на обоих серверах, включая уникальные товары каждого сервера.
                 </p>
+
+                <div className="field" style={{ marginTop: 4 }}>
+                    <label>Сервер</label>
+                    <select
+                        value={selectedServer}
+                        onChange={(e) => setSelectedServer(e.target.value as ServerType)}
+                    >
+                        {SERVERS.map((s) => (
+                            <option key={s} value={s}>{SERVER_LABELS[s]}</option>
+                        ))}
+                    </select>
+                </div>
 
                 <textarea
                     rows={10}

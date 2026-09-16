@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from './shared/context/ThemeContext';
+import { useRouter } from './routing/router';
 import { AccountSelector } from './components/AccountSelector';
 import { DashboardPage } from './pages/DashboardPage';
 import { AccountingPage } from './pages/AccountingPage';
@@ -19,9 +20,37 @@ const TABS: Array<{ id: Tab; label: string }> = [
     { id: 'backup', label: 'Резервная копия' },
 ];
 
+/**
+ * Пути вкладок. Вкладка без пути остаётся чисто внутренней (URL не меняется).
+ * Позже, при меню-дереве, сюда можно добавлять многосегментные маршруты
+ * (например '/reports/:year/:month') — роутер это уже поддерживает.
+ */
+const TAB_ROUTES: Partial<Record<Tab, string>> = {
+    dashboard: '/',
+    import: '/import-html',
+};
+
+/** Определяет активную вкладку по текущему пути (для восстановления при перезагрузке). */
+function tabFromPath(pathname: string): Tab {
+    if (pathname === '/import-html') return 'import';
+    return 'dashboard';
+}
+
 export const AppShell: React.FC = () => {
-    const [tab, setTab] = useState<Tab>('dashboard');
+    const { pathname, navigate } = useRouter();
+    const [tab, setTab] = useState<Tab>(() => tabFromPath(window.location.pathname));
     const { theme, toggleTheme } = useTheme();
+
+    // Синхронизируем вкладку с адресной строкой (перезагрузка, кнопки назад/вперёд).
+    useEffect(() => {
+        setTab(tabFromPath(pathname));
+    }, [pathname]);
+
+    const handleTab = (id: Tab) => {
+        setTab(id);
+        const route = TAB_ROUTES[id];
+        if (route) navigate(route);
+    };
 
     return (
         <div className="app-shell">
@@ -32,7 +61,7 @@ export const AppShell: React.FC = () => {
                         <button
                             key={t.id}
                             className={`btn ${tab === t.id ? 'btn-primary' : ''}`}
-                            onClick={() => setTab(t.id)}
+                            onClick={() => handleTab(t.id)}
                         >
                             {t.label}
                         </button>
