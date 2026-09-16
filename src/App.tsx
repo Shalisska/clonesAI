@@ -1,5 +1,5 @@
-import './1Application/styles/main.scss'
-import { useTheme } from './1Application/shared/context/ThemeContext'
+import './application/common/styles/main.scss'
+import { useTheme } from './application/common/utils/context/ThemeContext'
 
 function App() {
   const { theme, toggleTheme } = useTheme();
